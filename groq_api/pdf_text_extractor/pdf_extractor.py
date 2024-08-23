@@ -1,14 +1,19 @@
 import re
 from pdfminer.high_level import extract_text
+from pdfminer.pdfparser import PDFSyntaxError
 
 class PdfParser:
     def __init__(self, filepath):
         self.filepath = filepath
 
     def get_cleaned_text(self):
-        text = extract_text(self.filepath)
-        cleaned_text = self.clean_text(text)
-        return cleaned_text
+        try:
+            text = extract_text(self.filepath)
+            text = self.clean_text(text)
+            return text
+        except PDFSyntaxError as e:
+            print(f"Error extracting text from {self.filepath}: {e}")
+            return ""
 
     @staticmethod
     def clean_text(text):
